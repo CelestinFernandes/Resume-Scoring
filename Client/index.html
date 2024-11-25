@@ -4,7 +4,30 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
+    <title>ResumeScore</title>
+
+    <script>
+      // Check the user's system theme preference
+      const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const savedTheme = localStorage.getItem("theme");
+
+      // Apply the saved or preferred theme (light or dark) on page load
+      if (savedTheme) {
+        document.documentElement.classList.toggle("dark", savedTheme === "dark");
+      } else if (prefersDarkScheme) {
+        document.documentElement.classList.add("dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+      }
+
+      // Save the theme selection in localStorage so that it persists
+      function setTheme(theme) {
+        localStorage.setItem("theme", theme);
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      }
+
+      window.setTheme = setTheme;  // Expose this function globally for JS access
+    </script>
   </head>
   <body>
     <div id="root"></div>
