@@ -67,7 +67,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import resumeRoutes from './routes/resumeRoutes.js';
 import authRoutes from './routes/auth.route.js';
-import historyRoutes from './routes/historyRoutes.js'; 
+// import historyRoutes from './routes/historyRoutes.js'; 
 // import historyRoutes from '../api/routes/historyRoutes.js'; 
 import { analyzeResume } from './utils/resumeAnalyzer.js';
 
