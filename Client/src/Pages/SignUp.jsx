@@ -1,58 +1,71 @@
-import React, { useState } from 'react';
+// SignUp.jsx
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleEmailChange = (e) => setEmail(e.target.value);
-  const handlePasswordChange = (e) => setPassword(e.target.value);
-  const handleConfirmPasswordChange = (e) => setConfirmPassword(e.target.value);
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-
-    if (!email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
+  
+    // Basic validation
+    if (!formData.username || !formData.email || !formData.password || !formData.confirmPassword) {
+      setError('All fields are required');
       return;
     }
-
-    if (password !== confirmPassword) {
+  
+    if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-
-    setIsSubmitting(true);
-
+  
     try {
-      const response = await fetch('/api/signup', {
+      setLoading(true);
+      setError(null);
+  
+      const res = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json', // This is important
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          username: formData.username,
+          email: formData.email,
+          password: formData.password,
+        }),
       });
-      const result = await response.json();
-
-      if (response.ok) {
-        console.log('Registration successful', result);
-        localStorage.setItem('authToken', result.token);
-        navigate('/');
-      } else {
-        setError(result.message || 'Something went wrong');
+  
+      // Check if the response is successful
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.message || 'Something went wrong');
+        return;
       }
-    } catch (err) {
-      setError('Something went wrong. Please try again later.');
-    } finally {
-      setIsSubmitting(false);
+  
+      // Handle successful response
+      setLoading(false);
+      navigate('/signin');
+    } catch (error) {
+      setLoading(false);
+      setError('An error occurred. Please try again.');
     }
   };
 
@@ -62,6 +75,26 @@ const SignUp = () => {
         <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
 
         <form onSubmit={handleSubmit}>
+          {error && (
+            <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+              {error}
+            </div>
+          )}
+
+          <div className="mb-4">
+            <label htmlFor="username" className="block text-sm font-bold text-gray-700 dark:text-gray-300">
+              Username
+            </label>
+            <input
+              type="text"
+              id="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="mt-2 w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-700"
+              placeholder="Enter your username"
+            />
+          </div>
+
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-bold text-gray-700 dark:text-gray-300">
               Email
@@ -69,8 +102,8 @@ const SignUp = () => {
             <input
               type="email"
               id="email"
-              value={email}
-              onChange={handleEmailChange}
+              value={formData.email}
+              onChange={handleChange}
               className="mt-2 w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-700"
               placeholder="Enter your email"
             />
@@ -81,18 +114,18 @@ const SignUp = () => {
               Password
             </label>
             <input
-              type={passwordVisible ? 'text' : 'password'}
+              type={showPassword ? 'text' : 'password'}
               id="password"
-              value={password}
-              onChange={handlePasswordChange}
+              value={formData.password}
+              onChange={handleChange}
               className="mt-2 w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-700"
               placeholder="Enter your password"
             />
-            <span
-              onClick={() => setPasswordVisible(!passwordVisible)}
+            <span 
               className="absolute right-3 top-10 cursor-pointer text-gray-600 dark:text-gray-700"
+              onClick={() => setShowPassword(!showPassword)}
             >
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+              {showPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
@@ -101,33 +134,29 @@ const SignUp = () => {
               Confirm Password
             </label>
             <input
-              type={confirmPasswordVisible ? 'text' : 'password'}
+              type={showConfirmPassword ? 'text' : 'password'}
               id="confirmPassword"
-              value={confirmPassword}
-              onChange={handleConfirmPasswordChange}
+              value={formData.confirmPassword}
+              onChange={handleChange}
               className="mt-2 w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-700"
               placeholder="Confirm your password"
             />
-            <span
-              onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+            <span 
               className="absolute right-3 top-10 cursor-pointer text-gray-600 dark:text-gray-700"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
             >
-              {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+              {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
             </span>
           </div>
 
-          {error && (
-            <p className="text-sm text-red-500 mb-4">
-              <strong>Error:</strong> {error}
-            </p>
-          )}
-
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 disabled:bg-blue-300 focus:outline-none"
+            disabled={loading}
+            className={`w-full bg-blue-500 text-white py-3 px-4 rounded-lg hover:bg-blue-600 focus:outline-none ${
+              loading ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
           >
-            {isSubmitting ? 'Signing up...' : 'Sign Up'}
+            {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
 
