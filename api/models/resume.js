@@ -40,9 +40,9 @@ const resumeSchema = new mongoose.Schema(
     fileKey: { type: String }, // Storage key/path for the file
     Score: { type: Number, required: true, min: 0, max: 100 },
     scoringDetails: {
-      relevanceScore: { type: Number, required: true, min: 0, max: 100 },
-      sectionsScore: { type: Number, required: true, min: 0, max: 100 },
-      formattingScore: { type: Number, required: true, min: 0, max: 100 },
+      relevanceScore: { type: Number,default:0 , min: 0, max: 100 },
+      sectionsScore: { type: Number, default:0, min: 0, max: 100 },
+      formattingScore: { type: Number,default:0 , min: 0, max: 100 },
       summary: {
         strengths: { type: [String], default: [] },
         weaknesses: { type: [String], default: [] },

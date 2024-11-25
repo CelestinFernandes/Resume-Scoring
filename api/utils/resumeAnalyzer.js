@@ -173,6 +173,8 @@ export async function analyzeResume(resumeText, jobDescription) {
     try {
       // Find the JSON object in the response
       const jsonMatch = responseContent.match(/{[\s\S]*}/);
+
+      console.log("json-------------------------------->",jsonMatch)
       if (!jsonMatch) {
         throw new Error('No JSON content found in the response');
       }
@@ -189,7 +191,7 @@ export async function analyzeResume(resumeText, jobDescription) {
 
     // Default values for missing fields
     const transformedData = {
-      filename: resumeText.substring(0, 25),
+      filename: resumeText.substring(0, 15),
       text: resumeText,
       JD: jobDescription,
       Score: score !== undefined ? Number(score) : 0, // Default to 0 if missing

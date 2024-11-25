@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDropzone } from 'react-dropzone';
-import { FaUpload, FaFile, FaTimes } from 'react-icons/fa'; // Import the 'FaTimes' icon
+import { FaUpload, FaFile, FaTimes } from 'react-icons/fa';
 
 const API_URL = 'http://localhost:5000';
 
@@ -56,6 +56,7 @@ const Upload = () => {
     setIsUploading(true);
     setError('');
 
+
     const formData = new FormData();
     files.forEach((file) => formData.append('resumes', file));  // Append all selected files
     formData.append('jobDescription', jobDescription); // Add job description to formData
@@ -79,10 +80,11 @@ const Upload = () => {
 
 
       }
-
+      const fileNameWithExtension = files[0].name;  // Get the name of the first file
+      const fileName = fileNameWithExtension.split('.').slice(0, -1).join('.');  // Remove the extension
       const result = await response.json();
       console.log('Upload successful:', result);
-      navigate(`/results/${result.id}`); // Redirect to the results page using the result ID
+      navigate(`/results/${fileName}`); // Redirect to the results page using the result ID
     } catch (err) {
       setError(`Upload failed: ${err.message}`);
       console.error('Upload error:', err);

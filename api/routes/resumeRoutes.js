@@ -117,8 +117,9 @@
 import express from 'express';
 import multer from 'multer';
 // import { parseFile } from '../utils/fileParser'; // function to parse PDF
-import { analyzeResume } from '../utils/resumeAnalyzer.js'; // The analyzeResume function you modified
 import Resume from "../models/resume.js"; // Mongoose model to save the resume data
+import { analyzeResume } from '../utils/resumeAnalyzer.js'; // The analyzeResume function you modified
+// import Resume from '../models/Resume.js';
 
 import parseFile from "../utils/fileParser.js"
 const router = express.Router();
@@ -145,6 +146,7 @@ router.post('/analyze', upload.array('resumes'), async (req, res) => {
     // Assuming you're only analyzing the first resume file (adjust if needed)
     const analysisResult = await analyzeResume(resumeTexts[0], req.body.jobDescription);
     // Store the resume and analysis in MongoDB
+    console.log(analysisResult)
     const resumeData = {
       filename: req.files[0].originalname,
       text: resumeTexts[0],
@@ -154,11 +156,17 @@ router.post('/analyze', upload.array('resumes'), async (req, res) => {
         relevanceScore: analysisResult.relevanceScore,
         sectionsScore: analysisResult.sectionsScore,
         formattingScore: analysisResult.formattingScore,
-
+        
         summary: analysisResult.profileSummary,
         criteriaExplanation: analysisResult.criteriaExplanation,
       }
     };
+
+
+
+
+
+
 
     // Save the document in MongoDB
     const newResume = new Resume(resumeData);
