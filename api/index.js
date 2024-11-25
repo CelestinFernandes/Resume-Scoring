@@ -79,9 +79,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/resume', resumeRoutes);
-app.use('/api/history', historyRoutes); // Added history routes middleware
+app.use('/auth', authRoutes);
+app.use('/resume', resumeRoutes);
+app.use('/history', historyRoutes); // Added history routes middleware
 
 // Connect to MongoDB
 const connectDB = async () => {
