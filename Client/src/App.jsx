@@ -6,6 +6,7 @@ import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
+// import Results from "./Pages/Results";
 import Toggle from "./Components/Toggle";
 
 export default function App() {
