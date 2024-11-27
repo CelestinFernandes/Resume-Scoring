@@ -18,4 +18,6 @@ A responsive single-page web application built using **React**, **Vite**, and **
 #### **Future Enhancements:**  
 - Downloadable resume analysis report.  
 - Suggestions for improvement based on GPT insights.  
-- Dark/light mode toggle for enhanced user experience.  
+- Dark/light mode toggle for enhanced user experience.
+
+  *In-Progress*
